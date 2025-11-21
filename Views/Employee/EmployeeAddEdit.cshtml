@@ -1,0 +1,174 @@
+﻿@* @model HMS.Models.EmployeeModel
+
+<form method="post" asp-controller="Employee" asp-action="EmployeeAddEdit"
+      style="background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); width: 100%;">
+    <h2 style="text-align: center; margin-bottom: 20px;">Employee Registration</h2>
+
+    <input type="hidden" id="employeeID" name="EmployeeID" value="@Model.EmployeeID" />
+
+    <div style="margin-bottom: 15px;">
+        <label for="firstName" style="display: block; margin-bottom: 5px; font-weight: bold;">First Name</label>
+        <input type="text" id="firstName" name="FirstName" value="@Model.FirstName" required
+               style="width: 100%; padding: 8px 10px; border: 1px solid #ccc; border-radius: 5px;">
+    </div>
+
+    <div style="margin-bottom: 15px;">
+        <label for="lastName" style="display: block; margin-bottom: 5px; font-weight: bold;">Last Name</label>
+        <input type="text" id="lastName" name="LastName" value="@Model.LastName" required
+               style="width: 100%; padding: 8px 10px; border: 1px solid #ccc; border-radius: 5px;">
+    </div>
+
+    <div style="margin-bottom: 15px;">
+        <label for="email" style="display: block; margin-bottom: 5px; font-weight: bold;">Email</label>
+        <input type="email" id="email" name="Email" value="@Model.Email" required
+               style="width: 100%; padding: 8px 10px; border: 1px solid #ccc; border-radius: 5px;">
+    </div>
+
+    <div style="margin-bottom: 15px;">
+        <label for="gender" style="display: block; margin-bottom: 5px; font-weight: bold;">Gender</label>
+        <input type="text" id="gender" name="Gender" value="@Model.Gender" required
+               style="width: 100%; padding: 8px 10px; border: 1px solid #ccc; border-radius: 5px;">
+    </div>
+
+    <div style="margin-bottom: 15px;">
+        <label for="dob" style="display: block; margin-bottom: 5px; font-weight: bold;">Date of Birth</label>
+        <input type="date" id="dob" name="DOB" value="@Model.DOB" required
+               style="width: 100%; padding: 8px 10px; border: 1px solid #ccc; border-radius: 5px;">
+    </div>
+
+    <div style="margin-bottom: 15px;">
+        <label for="hireDate" style="display: block; margin-bottom: 5px; font-weight: bold;">Hire Date</label>
+        <input type="date" id="hireDate" name="HireDate" value="@Model.HireDate" required
+               style="width: 100%; padding: 8px 10px; border: 1px solid #ccc; border-radius: 5px;">
+    </div>
+
+    <div style="margin-bottom: 15px;">
+        <label for="jobTitle" style="display: block; margin-bottom: 5px; font-weight: bold;">Job Title</label>
+        <input type="text" id="jobTitle" name="Jobtitle" value="@Model.Jobtitle" required
+               style="width: 100%; padding: 8px 10px; border: 1px solid #ccc; border-radius: 5px;">
+    </div>
+
+    <div style="margin-bottom: 15px;">
+        <label for="department" style="display: block; margin-bottom: 5px; font-weight: bold;">Department</label>
+        <input type="text" id="department" name="Department" value="@Model.Department" required
+               style="width: 100%; padding: 8px 10px; border: 1px solid #ccc; border-radius: 5px;">
+    </div>
+
+    <div style="margin-bottom: 15px;">
+        <label for="salary" style="display: block; margin-bottom: 5px; font-weight: bold;">Salary</label>
+        <input type="number" step="0.01" id="salary" name="Salary" value="@Model.Salary" required
+               style="width: 100%; padding: 8px 10px; border: 1px solid #ccc; border-radius: 5px;">
+    </div>
+
+    <div style="margin-bottom: 15px;">
+        <label style="font-weight: bold;">
+            <input type="checkbox" id="isactive" name="IsActive" @(Model.IsActive ? "checked" : "")>
+            Active
+        </label>
+    </div>
+
+    
+
+    <div>
+        <button type="submit"
+                style="background-color: cornflowerblue; color: white; padding: 10px; width: 100%; border: none; border-radius: 5px; font-size: 16px; cursor: pointer;">
+            Submit
+        </button>
+    </div>
+</form> *@
+
+
+@model HMS.Models.EmployeeModel
+@{
+    ViewData["Title"] = "Add/Edit Employee";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+@using (Html.BeginForm("EmployeeAddEdit", "Employee", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    @Html.HiddenFor(model => model.EmployeeID)
+
+    <div class="mb-3">
+        <label asp-for="ProfileImageFile">Profile image</label>
+        <input asp-for="ProfileImageFile" type="file" class="form-control" />
+    </div>
+
+    @if (Model?.ProfileImage != null)
+    {
+        <div class="mb-2">
+            <img src="@Model.ImageBase64"
+                 alt="Profile"
+                 style="width:120px;height:120px;object-fit:cover;border:1px solid #ccc" />
+        </div>
+        <div class="form-check mb-3">
+            <input asp-for="RemoveImage" class="form-check-input" />
+            <label class="form-check-label">Remove existing image</label>
+        </div>
+    }
+
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.FirstName)
+        @Html.TextBoxFor(model => model.FirstName, new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.FirstName)
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.LastName)
+        @Html.TextBoxFor(model => model.LastName, new { @class = "form-control" })
+        @Html.ValidationMessageFor(model => model.LastName)
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Email)
+        @Html.TextBoxFor(model => model.Email, new { @class = "form-control", type = "email" })
+        @Html.ValidationMessageFor(model => model.Email)
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.DOB)
+        @Html.TextBoxFor(model => model.DOB, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+        @Html.ValidationMessageFor(model => model.DOB)
+    </div>
+
+    <div class="form-group">
+        @Html.LabelFor(model => model.Gender)
+        @Html.DropDownListFor(model => model.Gender, new SelectList(new[] {
+        new { Value = "Male", Text = "Male" },
+        new { Value = "Female", Text = "Female" },
+        new { Value = "Other", Text = "Other" }
+        }, "Value", "Text", Model.Gender), "Select Gender", new { @class = "form-control" })
+    @Html.ValidationMessageFor(model => model.Gender)
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(model => model.HireDate)
+    @Html.TextBoxFor(model => model.HireDate, "{0:yyyy-MM-dd}", new { @class = "form-control", type = "date" })
+    @Html.ValidationMessageFor(model => model.HireDate)
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(model => model.Jobtitle)
+    @Html.TextBoxFor(model => model.Jobtitle, new { @class = "form-control" })
+    @Html.ValidationMessageFor(model => model.Jobtitle)
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(model => model.Department)
+    @Html.TextBoxFor(model => model.Department, new { @class = "form-control" })
+    @Html.ValidationMessageFor(model => model.Department)
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(model => model.Salary)
+    @Html.TextBoxFor(model => model.Salary, new { @class = "form-control", type = "number", step = "0.01" })
+    @Html.ValidationMessageFor(model => model.Salary)
+</div>
+
+<div class="form-group">
+    <input type="submit" value="Save" class="btn btn-primary" />
+    <a href="@Url.Action("EmployeeList", "Employee")" class="btn btn-secondary">Cancel</a>
+</div>
+}

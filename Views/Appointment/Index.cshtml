@@ -1,0 +1,83 @@
+﻿@model List<HMS.Models.AppointmentModel>
+@{
+    ViewData["Title"] = "Appointments";
+    var search = ViewBag.SearchModel as HMS.Models.AppointmentSearchModel ?? new HMS.Models.AppointmentSearchModel();
+}
+
+<h2>Appointments</h2>
+
+<form method="get" class="row g-2 mb-3">
+    <div class="col-md-2">
+        <label>Appointment ID</label>
+        <input name="AppointmentID" value="@(search.AppointmentID == 0 ? "" : search.AppointmentID.ToString())" class="form-control" type="number" />
+    </div>
+    <div class="col-md-2">
+        <label>Doctor ID</label>
+        <input name="DoctorID" value="@(search.DoctorID == 0 ? "" : search.DoctorID.ToString())" class="form-control" type="number" />
+    </div>
+    <div class="col-md-2">
+        <label>Patient ID</label>
+        <input name="PatientID" value="@(search.PatientID == 0 ? "" : search.PatientID.ToString())" class="form-control" type="number" />
+    </div>
+    <div class="col-md-2">
+        <label>User ID</label>
+        <input name="UserID" value="@(search.UserID == 0 ? "" : search.UserID.ToString())" class="form-control" type="number" />
+    </div>
+    <div class="col-md-2">
+        <label>Status</label>
+        <input name="AppointmentStatus" value="@search.AppointmentStatus" class="form-control" />
+    </div>
+    <div class="col-md-2">
+        <label>From Date</label>
+        <input name="FromDate" value="@(search.FromDate == DateTime.MinValue ? "" : search.FromDate.ToString("yyyy-MM-dd"))" class="form-control" type="date" />
+    </div>
+    <div class="col-md-2">
+        <label>To Date</label>
+        <input name="ToDate" value="@(search.ToDate == DateTime.MinValue ? "" : search.ToDate.ToString("yyyy-MM-dd"))" class="form-control" type="date" />
+    </div>
+    <div class="col-md-12 mt-2">
+        <button type="submit" class="btn btn-primary">Search</button>
+        <a asp-controller="Appointment" asp-action="Index" class="btn btn-secondary">Reset</a>
+    </div>
+</form>
+
+<table class="table table-bordered table-striped">
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>DoctorID</th>
+            <th>PatientID</th>
+            <th>UserID</th>
+            <th>Date</th>
+            <th>Status</th>
+            <th>Amount</th>
+            <th>Remarks</th>
+            <th>Created</th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (!Model.Any())
+        {
+            <tr>
+                <td colspan="9" class="text-center">No records found</td>
+            </tr>
+        }
+        else
+        {
+            foreach (var a in Model)
+            {
+                <tr>
+                    <td>@a.AppointmentID</td>
+                    <td>@a.DoctorID</td>
+                    <td>@a.PatientID</td>
+                    <td>@a.UserID</td>
+                    <td>@a.AppointmentDate.ToString("dd-MMM-yyyy HH:mm")</td>
+                    <td>@a.AppointmentStatus</td>
+                    <td>@(a.TotalConsultedAmount.HasValue? a.TotalConsultedAmount.Value.ToString("F2") : "-")</td>
+                    <td>@a.SpecialRemarks</td>
+                    <td>@a.Created.ToString("dd-MMM-yyyy")</td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>

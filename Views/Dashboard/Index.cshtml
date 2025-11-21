@@ -1,0 +1,60 @@
+﻿@{
+    ViewBag.Title = "Dashboard";
+}
+
+<div class="container mt-4">
+    <h3 class="mb-4">Hospital Dashboard</h3>
+    <div class="row g-3">
+
+        <!-- Department Count -->
+        <div class="col-md-3">
+            <div class="card text-white bg-primary shadow-sm">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Departments</h5>
+                    <h2>@ViewBag.DepartmentCount</h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- Doctor Count -->
+        <div class="col-md-3">
+            <div class="card text-white bg-success shadow-sm">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Doctors</h5>
+                    <h2>@ViewBag.DoctorCount</h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- Patient Count -->
+        <div class="col-md-3">
+            <div class="card text-white bg-info shadow-sm">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Patients</h5>
+                    <h2>@ViewBag.PatientCount</h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pending Appointments -->
+        <div class="col-md-3">
+            <div class="card text-white bg-warning shadow-sm">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Pending Appointments</h5>
+                    <h2>@ViewBag.PendingAppointments</h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- Completed Appointments -->
+        <div class="col-md-3">
+            <div class="card text-white bg-secondary shadow-sm">
+                <div class="card-body text-center">
+                    <h5 class="card-title">Completed Appointments</h5>
+                    <h2>@ViewBag.CompletedAppointments</h2>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>

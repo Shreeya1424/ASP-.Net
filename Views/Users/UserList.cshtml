@@ -1,0 +1,238 @@
+﻿@using System.Data;
+@using HMS.Helper
+
+@{
+    ViewBag.Title = "User List";
+}
+
+<h1>xyz</h1>
+<form asp-action="DeleteSelectedUsers" asp-controller="Users" method="post">
+    @Html.AntiForgeryToken()
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">User List</h5>
+        <p>Displays organized records in a clear format, allowing users to view essential details at a glance.</p>
+           <mail address="23010101066@darshan.ac.in"></mail>
+            @* <p>Default format: <date></date></p>
+            <p>Custom format: <date format="MMMM dd, yyyy"></date></p> *@
+        <div style="text-align: right; margin-bottom: 15px;">
+            <a class="btn btn-primary" asp-controller="Users" asp-action="UsersAddEdit">
+                <i class="bi bi-person-plus me-1"></i> Add New
+            </a>
+            <a asp-action="ExportToExcel" class="btn btn-success">
+                <i class="bi bi-file-earmark-excel"></i> Export to Excel
+            </a>
+                <button type="submit" class="btn btn-danger">
+                    <i class="bi ri-delete-bin-2-fill"></i> Delete Selected
+                </button>
+
+        </div>
+
+        <div class="table-responsive" style="max-height: 400px; overflow: auto;">
+            <table class="table table-striped mb-0">
+                <thead>
+                    <tr>
+                        <th><input type="checkbox" id="selectAll" /></th>
+
+                        <th>UserID</th>
+                        <th>UserName</th>
+                         @* <th>Password</th> *@
+                        <th>Email</th>
+                        <th>MobileNo</th>
+                        <th>IsActive</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (DataRow dataRow in Model.Rows)
+                    {
+                        <tr>
+                            <td>
+                                <input type="checkbox" name="selectedUserIds" value="@dataRow["UserID"]" class="userCheckbox" />
+                            </td>
+                            <td>@dataRow["UserID"]</td>
+                            <td>@dataRow["UserName"]</td>
+                            <td>@dataRow["Email"]</td>
+                            <td>@dataRow["MobileNo"]</td>
+                            <td>
+                                @{
+                                    bool isActive = Convert.ToBoolean(dataRow["IsActive"]);
+                                    string statusText = isActive ? "Active" : "Not Active";
+                                    string badgeClass = isActive ? "status-badge active" : "status-badge not-active";
+                                }
+                                <span class="@badgeClass">@statusText</span>
+                            </td>
+
+
+                            <td>
+                                <div class="d-inline-flex gap-1">
+                                        <!-- Edit Button -->
+                                        <a asp-controller="Users"
+                                           asp-action="UsersEdit"
+                                           asp-route-EncUserID="@UrlEncryptor.Encrypt(dataRow["UserID"].ToString())"
+                                           class="btn btn-sm btn-primary me-1"
+                                           title="Edit">
+                                            <i class="bi bi-pencil-square"></i>
+                                        </a>
+
+                                        <!-- Delete Button -->
+                                        <a href="javascript:void(0);"
+                                           class="btn btn-sm btn-danger delete-btn d-flex align-items-center justify-content-center"
+                                           data-userid="@HMS.Helper.UrlEncryptor.Encrypt(dataRow["UserID"].ToString())"
+                                           title="Delete"
+                                           style="width:32px; height:32px; padding:0;">
+                                            <span class="d-inline-block bg-white rounded-circle d-flex align-items-center justify-content-center"
+                                                  style="width:18px; height:18px;">
+                                                <i class="bi bi-x text-danger" style="font-size:12px;"></i>
+                                            </span>
+                                        </a>
+                                    </div>
+
+
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</form>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <script>
+
+         document.getElementById("selectAll").addEventListener("change", function () {
+            const checkboxes = document.querySelectorAll(".userCheckbox");
+            checkboxes.forEach(cb => cb.checked = this.checked);
+        });
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const deleteButtons = document.querySelectorAll('.delete-btn');
+
+            deleteButtons.forEach(btn => {
+                btn.addEventListener('click', function () {
+                    const userId = this.getAttribute('data-userid');
+
+                    Swal.fire({
+                        title: 'Are you sure?',
+                        text: 'Do you really want to delete this user?',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#3085d6',
+                        confirmButtonText: 'Yes, delete it!',
+                        cancelButtonText: 'Cancel'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            $.ajax({
+                                url: '/Users/DeleteUser',
+                                type: 'POST',
+                                data: { UserID: userId },
+                                success: function () {
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'Deleted!',
+                                        text: 'User deleted successfully.',
+                                        timer: 2000,
+                                        showConfirmButton: false
+                                    }).then(() => {
+                                        location.reload();
+                                    });
+                                },
+                                error: function () {
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Error!',
+                                        text: 'There was a problem deleting the user.'
+                                    });
+                                }
+                            });
+                        }
+                    });
+                });
+            });
+
+            // SweetAlert for success and error messages
+            @if (TempData["SuccessMessage"] != null)
+            {
+                    <text>
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Success!',
+                            text: '@TempData["SuccessMessage"]',
+                            timer: 2000,
+                            showConfirmButton: false
+                        });
+                    </text>
+            }
+
+            @if (TempData["UpdateSuccessMessage"] != null)
+            {
+                    <text>
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Updated!',
+                            text: '@TempData["UpdateSuccessMessage"]',
+                            timer: 2000,
+                            showConfirmButton: false
+                        });
+                    </text>
+            }
+
+            @if (TempData["DeleteSuccessMessage"] != null)
+            {
+                    <text>
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Deleted!',
+                            text: '@TempData["DeleteSuccessMessage"]',
+                            timer: 2000,
+                            showConfirmButton: false
+                        });
+                    </text>
+            }
+
+            @if (TempData["ErrorMessage"] != null)
+            {
+                    <text>
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error!',
+                            text: '@TempData["ErrorMessage"]',
+                            timer: 3000,
+                            showConfirmButton: false
+                        });
+                    </text>
+            }
+        });
+
+    </script>
+}
+<style>
+    .status-badge {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 50px;
+        font-size: 0.875rem;
+        font-weight: 500;
+        text-align: center;
+        border: 1px solid;
+        pointer-events: none;
+    }
+
+        .status-badge.active {
+            color: #198754; /* Bootstrap green */
+            background-color: rgba(25, 135, 84, 0.15); /* transparent green */
+            border-color: #198754;
+        }
+
+        .status-badge.not-active {
+            color: #dc3545; /* Bootstrap red */
+            background-color: rgba(220, 53, 69, 0.15); /* transparent red */
+            border-color: #dc3545;
+        }
+</style>

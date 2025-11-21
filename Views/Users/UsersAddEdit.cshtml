@@ -1,0 +1,137 @@
+﻿@model HMS.Models.UsersModel
+
+@{
+    ViewBag.Title = "Add/Edit User";
+}
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">@((Model.UserID == 0 || Model.UserID == null) ? "Add User" : "Edit User")</h4>
+                </div>
+                <div class="card-body">
+                    @if (ViewBag.ErrorMessage != null)
+                    {
+                        <div class="alert alert-danger">@ViewBag.ErrorMessage</div>
+                    }
+                    @if (TempData["SuccessMessage"] != null)
+                    {
+                        <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+                    }
+                    
+                    
+                    @using (Html.BeginForm("UsersAddEdit", "Users", FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.HiddenFor(m => m.UserID)
+                        @Html.HiddenFor(m => m.Created)
+                        @Html.HiddenFor(m => m.Modified)
+
+                        <div class="mb-3">
+                            @Html.LabelFor(m => m.UserName, htmlAttributes: new { @class = "form-label fw-bold" })
+                            <span class="text-danger">*</span>
+                            @Html.TextBoxFor(m => m.UserName, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.UserName, "", new { @class = "text-danger d-none" })
+                        </div>
+
+                        <div class="mb-3">
+                            @Html.LabelFor(m => m.Password, new { @class = "form-label fw-bold" })
+                            <span class="text-danger">*</span>
+                            @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+                            @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger d-none" })
+                        </div>
+
+                        <div class="mb-3">
+                            @Html.LabelFor(m => m.Email, new { @class = "form-label fw-bold" })
+                            <span class="text-danger">*</span>
+                            @Html.TextBoxFor(m => m.Email, new { @class = "form-control", type = "email" })
+                            @Html.ValidationMessageFor(m => m.Email, "", new { @class = "text-danger d-none" })
+                        </div>
+
+                        <div class="mb-3">
+                            @Html.LabelFor(m => m.MobileNo, new { @class = "form-label fw-bold" })
+                            <span class="text-danger">*</span>
+                            @Html.TextBoxFor(m => m.MobileNo, new { @class = "form-control", type = "tel" })
+                            @Html.ValidationMessageFor(m => m.MobileNo, "", new { @class = "text-danger d-none" })
+                        </div>
+
+                        
+
+                        <div class="mb-3">
+                            <label class="form-label fw-bold d-block">Status <span class="text-danger">*</span></label>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="IsActive" id="active" value="true" @(Model.IsActive ? "checked" : "") />
+                                <label class="form-check-label" for="active">Active</label>
+                            </div>
+                            <div class="form-check form-check-inline">
+                                <input class="form-check-input" type="radio" name="IsActive" id="notactive" value="false" @(!Model.IsActive ? "checked" : "") />
+                                <label class="form-check-label" for="notactive">Not Active</label>
+                            </div>
+                        </div>
+
+
+                        <div class="d-flex justify-content-between">
+                            <button type="submit" class="btn btn-danger w-30">Save</button>
+                            <a href="@Url.Action("UserList", "Users")" class="btn btn-primary w-30">Back to List</a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation-unobtrusive@4.0.0/dist/jquery.validate.unobtrusive.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            // Clear default validation
+            $("form").removeData("validator");
+            $("form").removeData("unobtrusiveValidation");
+            $.validator.unobtrusive.parse("form");
+
+            // Hide error messages initially
+            $(".field-validation-error").addClass("d-none");
+
+            // Show validation message only after leaving the field
+            $("form input").on("blur", function () {
+                var $input = $(this);
+                if (!$input.valid()) {
+                    $input.siblings(".field-validation-error").removeClass("d-none");
+                } else {
+                    $input.siblings(".field-validation-error").addClass("d-none");
+                }
+            });
+
+            // On submit, show all errors
+            $("form").on("submit", function () {
+                var isValid = $(this).valid();
+
+                // Show all validation errors
+                if (!isValid) {
+                    $(".field-validation-error").removeClass("d-none");
+
+                    // Scroll to the first error
+                    $('html, body').animate({
+                        scrollTop: $(".input-validation-error").first().offset().top - 100
+                    }, 500);
+                }
+
+                return isValid;
+            });
+        });
+
+
+
+    </script>
+}
+
+

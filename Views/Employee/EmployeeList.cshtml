@@ -1,0 +1,78 @@
+﻿@using System.Data;
+<div class="card">
+	<div class="card-body">
+		<h5 class="card-title">Employee List</h5>
+		<p>Displays organized records in a clear format, allowing users to view essential details at a glance. Helps in tracking, reviewing, and managing information efficiently across various sections.</p>
+
+		<div class="table-responsive" style="max-height: 400px; overflow: auto;">
+			<table class="table  table-striped mb-0">
+				<thead>
+					<tr>
+						<th>EmployeeID</th>
+						<th>Image</th>
+						<th>FirstName</th>
+						<th>LastName</th>
+						<th>Email</th>
+						<th>Gender</th>
+						<th>DOB</th>
+						<th>HireDate</th>
+						<th>Jobtitle</th>
+						<th>Department</th>
+						<th>Salary</th>
+						<th>IsActive</th>
+						<th>Created</th>
+						<th>Modified</th>
+						<th>Actions</th>
+					</tr>
+				</thead>
+				<tbody>
+					@foreach (DataRow dataRow in Model.Rows)
+					{
+						<tr>
+							<td>@dataRow["EmployeeId"]</td>
+							<td>
+								@if (@dataRow["ProfileImage"] != DBNull.Value)
+								{
+									var bytes = (byte[])@dataRow["ProfileImage"];
+									var contentType = @dataRow["ImageContentType"]?.ToString() ?? "image/png";
+									var base64 = Convert.ToBase64String(bytes);
+									<img src="data:@contentType;base64,@base64" style="width:60px;height:60px;object-fit:cover" />
+								}
+								else
+								{
+									<img src="~/images/default-user.png" style="width:60px;height:60px;object-fit:cover" />
+								}
+							</td>
+							@* <td>@row["FirstName"] @row["LastName"]</td> *@
+							<td>@dataRow["FirstName"]</td>
+							<td>@dataRow["LastName"]</td>
+							<td>@dataRow["Email"]</td>
+							<td>@dataRow["Gender"]</td>
+							<td>@dataRow["DOB"]</td>
+							<td>@dataRow["HireDate"]</td>
+							<td>@dataRow["Jobtitle"]</td>
+							<td>@dataRow["Department"]</td>
+							<td>@dataRow["Salary"]</td>
+							<td>@dataRow["IsActive"]</td>
+							<td>@dataRow["Created"]</td>
+							<td>@dataRow["Modified"]</td>
+							<td>
+								<div class="d-flex gap-2">
+									<a class="btn btn-info btn-sm" asp-controller="Employee" asp-action="EmployeeEdit" asp-route-EmployeeId="@dataRow["EmployeeId"]">
+										Edit
+									</a>
+									<a class="btn btn-danger btn-sm" asp-controller="Employee" asp-action="DeleteEmployee" asp-route-EmployeeId="@dataRow["EmployeeId"]">
+										Delete
+									</a>
+								</div>
+							</td>
+						</tr>
+					}
+
+				</tbody>
+			</table>
+
+		</div>
+	</div>
+
+</div>

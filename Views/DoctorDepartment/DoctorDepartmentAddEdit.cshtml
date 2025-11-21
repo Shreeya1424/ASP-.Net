@@ -1,0 +1,168 @@
+﻿@* @model HMS.Models.DoctorDepartmentModel
+
+@{
+    ViewBag.Title = "Add/Edit Doctor Department";
+}
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">@((Model.DoctorDepartmentID == 0 || Model.DoctorDepartmentID == null) ? "Add Doctor Department" : "Edit Doctor Department")</h4>
+                </div>
+                <div class="card-body">
+                    @if (ViewBag.ErrorMessage != null)
+                    {
+                        <div class="alert alert-danger">@ViewBag.ErrorMessage</div>
+                    }
+                    @if (TempData["SuccessMessage"] != null)
+                    {
+                        <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+                    }
+
+                    @using (Html.BeginForm("DoctorDepartmentAddEdit", "DoctorDepartment", FormMethod.Post))
+                    {
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" asp-for="DoctorDepartmentID" />
+                        @Html.HiddenFor(m => m.DoctorDepartmentID)
+                        @Html.HiddenFor(m => m.Created)
+                        @Html.HiddenFor(m => m.Modified)
+
+                        <!-- Doctor Dropdown -->
+            <div class="mb-3">
+                <label asp-for="DoctorID" class="form-label fw-bold"></label>
+                <span class="text-danger">*</span>
+                <select asp-for="DoctorID" class="form-select rounded-3" asp-items="ViewBag.Doctors">
+                    <option value="">-- Select Doctor --</option>
+                </select>
+                <span asp-validation-for="DoctorID" class="text-danger small"></span>
+            </div>
+
+            <!-- Department Dropdown -->
+            <div class="mb-3">
+                <label asp-for="DepartmentID" class="form-label fw-bold"></label>
+                <span class="text-danger">*</span>
+                <select asp-for="DepartmentID" class="form-select rounded-3" asp-items="ViewBag.Departments">
+                    <option value="">-- Select Department --</option>
+                </select>
+                <span asp-validation-for="DepartmentID" class="text-danger small"></span>
+            </div>
+
+            <!-- User Dropdown -->
+            <div class="mb-3">
+                <label asp-for="UserID" class="form-label fw-bold"></label>
+                <span class="text-danger">*</span>
+                <select asp-for="UserID" class="form-select rounded-3" asp-items="ViewBag.Users">
+                    <option value="">-- Select User --</option>
+                </select>
+                <span asp-validation-for="UserID" class="text-danger small"></span>
+            </div>
+
+
+                        <div class="d-flex justify-content-between">
+                            <button type="submit" class="btn btn-danger w-30">Save</button>
+                            <a href="@Url.Action("DoctorDepartmentList", "DoctorDepartment")" class="btn btn-primary w-30">Back to List</a>
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div> *@
+
+
+@model HMS.Models.DoctorDepartmentModel
+
+@{
+    ViewBag.Title = Model.DoctorDepartmentID == 0 ? "Add Doctor Department" : "Edit Doctor Department";
+}
+
+<div class="card">
+    <div class="card-body">
+        <h5 class="card-title">@ViewBag.Title</h5>
+
+        <form asp-action="DoctorDepartmentAddEdit" asp-controller="DoctorDepartment" method="post">
+            <input type="hidden" asp-for="DoctorDepartmentID" />
+
+            <div class="mb-3">
+                <label asp-for="DoctorID" class="form-label"></label>
+                <select asp-for="DoctorID" class="form-control" asp-items="ViewBag.Doctors"></select>
+                <span asp-validation-for="DoctorID" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="DepartmentID" class="form-label"></label>
+                <select asp-for="DepartmentID" class="form-control" asp-items="ViewBag.Departments"></select>
+                <span asp-validation-for="DepartmentID" class="text-danger"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="UserID" class="form-label"></label>
+                <select asp-for="UserID" class="form-control" asp-items="ViewBag.Users"></select>
+                <span asp-validation-for="UserID" class="text-danger"></span>
+            </div>
+
+            <!-- ✅ Correct submit button -->
+            <button type="submit" class="btn btn-success">
+                @(Model.DoctorDepartmentID == 0 ? "Add" : "Update")
+            </button>
+
+            <a asp-action="DoctorDepartmentList" asp-controller="DoctorDepartment" class="btn btn-secondary">Cancel</a>
+        </form>
+
+    </div>
+</div>
+
+
+
+@section Scripts {
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+    }
+
+    <partial name="_ValidationScriptsPartial" />
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation-unobtrusive@4.0.0/dist/jquery.validate.unobtrusive.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $("form").removeData("validator");
+            $("form").removeData("unobtrusiveValidation");
+            $.validator.unobtrusive.parse("form");
+
+            $(".field-validation-error").addClass("d-none");
+
+            $("form input").on("blur", function () {
+                var $input = $(this);
+                if (!$input.valid()) {
+                    $input.siblings(".field-validation-error").removeClass("d-none");
+                } else {
+                    $input.siblings(".field-validation-error").addClass("d-none");
+                }
+            });
+
+            $("form").on("submit", function () {
+                var isValid = $(this).valid();
+                if (!isValid) {
+                    $(".field-validation-error").removeClass("d-none");
+                    $('html, body').animate({
+                        scrollTop: $(".input-validation-error").first().offset().top - 100
+                    }, 500);
+                }
+                return isValid;
+            });
+        });
+    </script>
+}
